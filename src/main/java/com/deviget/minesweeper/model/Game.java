@@ -1,6 +1,7 @@
 package com.deviget.minesweeper.model;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Random;
 import javax.persistence.Id;
 
@@ -34,6 +35,11 @@ public class Game {
 	private Boolean playable;
 
 	private String board[];
+	
+	private Long lastMoveTime;
+
+	@Getter
+	private Long elapsedTime;
 
 	//CONSTANTS representing the values in the cells
 	private final char MINE = 'M';
@@ -121,20 +127,35 @@ public class Game {
 				});
 			}
 		}
+		lastMoveTime = Calendar.getInstance().getTimeInMillis();
+		elapsedTime =0l;
 	}
 
-	private Game(int cols, int rows, int mines, String user,String id, String [] board,Boolean playable){
+	private Game(int cols, int rows, int mines, String user,String id, String [] board, Long elapsedTime, Long lastMoveTime,Boolean playable){
 		this.cols = cols;
 		this.rows = rows;
 		this.mines = mines;
 		this.id = id;
 		this.board = board;
+		this.elapsedTime = elapsedTime;
+		this.lastMoveTime = lastMoveTime;
 		this.playable = playable;
 	}
 
+	/**
+	 * Method used to adjust the elapsed time
+	 */
+	private void adjustTime() {
+		Long currentTime = Calendar.getInstance().getTimeInMillis();
+		Long timeFromLastMove = currentTime - lastMoveTime;
+		elapsedTime = elapsedTime + timeFromLastMove;
+		lastMoveTime = currentTime;
+	}
+	
 	public void clear(int x, int y) throws Exception{
 		if(x >= 0 && x < cols && y >= 0 && y < rows && playable) {
 			int pos = y*rows + x;
+			adjustTime();
 			if(board[pos].indexOf(COVER)!=-1 && board[pos].indexOf(FLAG) ==-1 && board[pos].indexOf(QUESTION)==-1) {
 				//clear this one
 				board[pos] = board[pos].replace(""+COVER, "");
@@ -180,6 +201,7 @@ public class Game {
 
 	public void putFlag(int x, int y) {
 		if(x >= 0 && x < cols && y >= 0 && y < rows && playable) {
+			adjustTime();
 			int pos = y*rows + x;
 			if(board[pos].indexOf(COVER)!=-1) {
 				board[pos] = board[pos].replace(""+QUESTION,"");
@@ -194,6 +216,7 @@ public class Game {
 
 	public void putQuestion(int x, int y) {
 		if(x >= 0 && x < cols && y >= 0 && y < rows && playable) {
+			adjustTime();
 			int pos = y*rows + x;
 			if(board[pos].indexOf(COVER)!=-1) {
 				board[pos] = board[pos].replace(""+FLAG,"");
@@ -251,10 +274,18 @@ public class Game {
 	}
 
 	public static void main(String args[]) {
+		Calendar c = Calendar.getInstance();
+		c.set(Calendar.HOUR_OF_DAY,12);
+		c.set(Calendar.MINUTE, 16);
+		c.set(Calendar.MONTH, Calendar.SEPTEMBER);
+		c.set(Calendar.DATE,30);
+		c.set(Calendar.YEAR, 2021);
+		
 		String board[] ={"C","C","C","C","C","C2","C2","C1","C","C","CM","CM","C1","C","C","CM","C3","C1","C","C","C1","C1","C","C","C"}; 
-		Game custom = new Game(5,5,3,"martin","sdsds1sd",board,true);
+		Game custom = new Game(5,5,3,"martin","sdsds1sd",board,0l,c.getTimeInMillis(),true);
 		try {
 			custom.clear(0, 0);
+			System.out.println("elapsed:" + custom.getElapsedTime());
 			System.out.println(custom.displayBoard());
 			custom.putFlag(0, 2);
 			System.out.println(custom.displayBoard());
