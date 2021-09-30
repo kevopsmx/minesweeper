@@ -1,0 +1,273 @@
+{
+	"info": {
+		"_postman_id": "7d9b88b6-56b8-461d-810f-514cee1c11e1",
+		"name": "MineSweeper",
+		"description": "MineSweeper API Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "CreateUser",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userId\":\"cobian\",\n    \"name\":\"Martín\",\n    \"lastName\":\"Cobián\"\n}"
+				},
+				"url": {
+					"raw": "{{host}}/createUser",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"createUser"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "newGame",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"rows\":5,\n    \"cols\":5,\n    \"mines\":1,\n    \"user\":\"cobian\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/newGame",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"newGame"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DisplayBoard",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host}}/displayBoard?gameId=NzPKDIl1PF&userId=cobian",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"displayBoard"
+					],
+					"query": [
+						{
+							"key": "gameId",
+							"value": "NzPKDIl1PF"
+						},
+						{
+							"key": "userId",
+							"value": "cobian"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FullGameInfo",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host}}/fullGameInfo?gameId=nQYEq96wyj&userId=cobian",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"fullGameInfo"
+					],
+					"query": [
+						{
+							"key": "gameId",
+							"value": "nQYEq96wyj"
+						},
+						{
+							"key": "userId",
+							"value": "cobian"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PlayableBoard",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host}}/playableBoard?gameId=EOlH4AR5Dm&userId=cobian",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"playableBoard"
+					],
+					"query": [
+						{
+							"key": "gameId",
+							"value": "EOlH4AR5Dm"
+						},
+						{
+							"key": "userId",
+							"value": "cobian"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "MakeMove",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userId\":\"cobian\",\n    \"gameId\":\"EOlH4AR5Dm\",\n    \"x\":0,\n    \"y\":4\n}"
+				},
+				"url": {
+					"raw": "{{host}}/makeMove",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"makeMove"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "markFlag",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userId\":\"cobian\",\n    \"gameId\":\"NzPKDIl1PF\",\n    \"x\":4,\n    \"y\":2\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/markFlag",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"markFlag"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "markQuestion",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userId\":\"cobian\",\n    \"gameId\":\"uxAhy9euTC\",\n    \"x\":0,\n    \"y\":0\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/markQuestion",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"markQuestion"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "localhost:8080"
+		}
+	]
+}

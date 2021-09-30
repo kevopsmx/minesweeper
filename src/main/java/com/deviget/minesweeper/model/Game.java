@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -16,6 +17,7 @@ import lombok.Setter;
  *
  */
 @Entity
+@NoArgsConstructor
 public class Game {
 	
 	@Getter
@@ -145,6 +147,7 @@ public class Game {
 				});
 			}
 		}
+		playable = true;
 		lastMoveTime = Calendar.getInstance().getTimeInMillis();
 		elapsedTime =0l;
 	}
