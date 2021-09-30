@@ -178,6 +178,33 @@ public class Game {
 		}
 	}
 
+	public void putFlag(int x, int y) {
+		if(x >= 0 && x < cols && y >= 0 && y < rows && playable) {
+			int pos = y*rows + x;
+			if(board[pos].indexOf(COVER)!=-1) {
+				board[pos] = board[pos].replace(""+QUESTION,"");
+				if(board[pos].indexOf(FLAG)==-1)
+					board[pos] = board[pos] + FLAG;
+				else {
+					board[pos] = board[pos].replace(""+FLAG,"");
+				}	
+			}
+		}
+	}
+
+	public void putQuestion(int x, int y) {
+		if(x >= 0 && x < cols && y >= 0 && y < rows && playable) {
+			int pos = y*rows + x;
+			if(board[pos].indexOf(COVER)!=-1) {
+				board[pos] = board[pos].replace(""+FLAG,"");
+				if(board[pos].indexOf(QUESTION)==-1)
+					board[pos] = board[pos] + QUESTION;
+				else
+					board[pos] = board[pos].replace(""+QUESTION,"");
+			}
+		}
+	}
+
 	public boolean checkForWin() {
 		//check for wins
 		int covered = 0;
@@ -229,7 +256,11 @@ public class Game {
 		try {
 			custom.clear(0, 0);
 			System.out.println(custom.displayBoard());
-			custom.clear(1, 0);
+			custom.putFlag(0, 2);
+			System.out.println(custom.displayBoard());
+			custom.putQuestion(1, 2);
+			System.out.println(custom.displayBoard());
+			custom.putFlag(0, 3);
 			System.out.println(custom.displayBoard());
 			custom.clear(0, 4);
 		} catch(Exception e) {
