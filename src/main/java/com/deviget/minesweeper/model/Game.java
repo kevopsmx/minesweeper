@@ -1,5 +1,6 @@
 package com.deviget.minesweeper.model;
 
+import java.util.ArrayList;
 import java.util.Random;
 import javax.persistence.Id;
 
@@ -62,6 +63,61 @@ public class Game {
 				i++;
 			}
 		}
+
+		//put the adjacencies
+		for(int i=0;i<board.length;i++) {
+			if(board[i].indexOf(MINE)!=-1) {
+				//1st -1y -1x
+				//2nd -1y -0x
+				//3rd -1y +1x
+				//4th -0y -1x
+				//5th -0y +1x
+				//6th +1y -1x
+				//7th +1y +0x
+				//8th +1y +1x
+
+				ArrayList<Integer> adjacents = new ArrayList<Integer>();
+				int x= i % cols;
+				int y= i / cols;
+
+				//-1y
+				if(y-1 >= 0) {
+					if(x-1 >= 0) {
+						adjacents.add(i - rows - 1);
+					}
+					adjacents.add(i - rows);
+					if(x+1 < cols)
+						adjacents.add(i - rows +1);
+				}
+				//+0y
+				if(x-1 >= 0)
+					adjacents.add(i - 1);
+				if(x+1 < cols)
+					adjacents.add(i + 1);
+				
+				//+1y
+				if(y+1 < rows) {
+					if(x-1 >= 0)
+						adjacents.add(i + rows -1);
+					adjacents.add(i + rows);
+					if(x + 1 < cols)
+						adjacents.add(i + rows +1);
+				}
+				
+				adjacents.forEach(currentAdj -> {
+					if(board[currentAdj].indexOf(MINE)==-1) {
+						String currentAdjString = board[currentAdj].substring(1);
+						
+						if(currentAdjString.length()==0)
+							board[currentAdj] = board[currentAdj] + "1";
+						else {
+							int currentAdjInt = Integer.parseInt(currentAdjString) + 1;
+							board[currentAdj] = COVER + "" + currentAdjInt;
+						}						
+					}
+				});
+			}
+		}
 	}
 	
 	/**
@@ -100,7 +156,7 @@ public class Game {
 	}
 
 	public static void main(String args[]) {
-		Game game = new Game(5,5,1,"martin");
+		Game game = new Game(5,5,3,"martin");
 		System.out.println(game.displayBoard());
 	}
 }
