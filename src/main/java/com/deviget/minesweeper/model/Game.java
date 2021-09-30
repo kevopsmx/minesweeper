@@ -8,6 +8,11 @@ import javax.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Game representation
+ * @author Martín Cobián
+ *
+ */
 public class Game {
 	
 	@Getter
@@ -34,6 +39,7 @@ public class Game {
 	@Getter
 	private Boolean playable;
 
+	//the game board, in an unidimensional array, representing the multidimensional cells in "x"
 	private String board[];
 	
 	private Long lastMoveTime;
@@ -47,6 +53,15 @@ public class Game {
 	private final char FLAG = 'F';
 	private final char QUESTION = 'Q';
 
+	/**
+	 * Initialize a new game
+	 * Set mines randomly
+	 * Compute adjacent mines for each cell
+	 * @param cols Number of columns
+	 * @param rows Number of rows
+	 * @param mines Number of mines
+	 * @param user UserId for the game
+	 */
 	public Game(int cols, int rows, int mines, String user){
 		this.cols = cols;
 		this.rows = rows;
@@ -131,6 +146,18 @@ public class Game {
 		elapsedTime =0l;
 	}
 
+	/**
+	 * Init an custom game, TEST ONLY
+	 * @param cols Number of columns
+	 * @param rows Number of rows
+	 * @param mines Number of mines
+	 * @param user User owning the game
+	 * @param id Game id
+	 * @param board Board array
+	 * @param elapsedTime Elapsed time
+	 * @param lastMoveTime Time of the last move
+	 * @param playable if it is playable or not
+	 */
 	private Game(int cols, int rows, int mines, String user,String id, String [] board, Long elapsedTime, Long lastMoveTime,Boolean playable){
 		this.cols = cols;
 		this.rows = rows;
@@ -152,6 +179,13 @@ public class Game {
 		lastMoveTime = currentTime;
 	}
 	
+	/**
+	 * Make a "clearing" move in given ("x","y") position
+	 * Only valid in COVERED positions having no FLAG or QUESTION
+	 * @param x column, starts in 0
+	 * @param y row, starts in 0 
+	 * @throws Exception
+	 */
 	public void clear(int x, int y) throws Exception{
 		if(x >= 0 && x < cols && y >= 0 && y < rows && playable) {
 			int pos = y*rows + x;
@@ -199,6 +233,13 @@ public class Game {
 		}
 	}
 
+	/**
+	 * Put a flag in a given position
+	 * Only when position is COVERED
+	 * Replaces any existing QUESTION with a FLAG
+	 * @param x , column to put the FLAG on
+	 * @param y, row to put the FLAG on
+	 */
 	public void putFlag(int x, int y) {
 		if(x >= 0 && x < cols && y >= 0 && y < rows && playable) {
 			adjustTime();
@@ -214,6 +255,13 @@ public class Game {
 		}
 	}
 
+	/**
+	 * Put a QUESTION in a given position
+	 * Only when position is COVERED
+	 * Replaces any existing FLAG with a QUESTION
+	 * @param x , column to put the QUESTION on
+	 * @param y, row to put the QUESTION on
+	 */
 	public void putQuestion(int x, int y) {
 		if(x >= 0 && x < cols && y >= 0 && y < rows && playable) {
 			adjustTime();
@@ -228,6 +276,10 @@ public class Game {
 		}
 	}
 
+	/**
+	 * Count covered positions, if value equals mines it is a win
+	 * @return if covered positions are equals to mine, it means a win
+	 */
 	public boolean checkForWin() {
 		//check for wins
 		int covered = 0;
@@ -258,7 +310,24 @@ public class Game {
 
 	/**
 	 * Display the board in human readable form, comma sepparated rows and columns
-	*/
+	 * C covered
+	 * M mine
+	 * # nearby mines
+	 * F User Flag
+	 * Q User Question
+	 * blank. Being uncovered with no flag,question,mine or adjacent mine
+	 * 
+	 * combinations:
+	 * CM Covered mine
+	 * C# Covered adjacent mine counter
+	 * CQM Covered and Question marked mine
+	 * CFM Covered and Flag marked mine
+	 * CQ# Covered and Question marked mine counter
+	 * CF# Covered and Flagged mine counter
+	 * # Uncovered mine counter 
+	 * blank No mine and no counter uncovered position
+	 * @return the board
+	 */
 	public String displayBoard() {
 		StringBuilder bld = new StringBuilder();
 		for(int y=0;y<rows;y++) {
@@ -273,6 +342,48 @@ public class Game {
 		return bld.toString();
 	}
 
+	/**
+	 * Displays the playable board, can show it to the user
+	 * Shows only FLAGS
+	 * Shows only QUESTIONS
+	 * Shows only ADJACENT MINES
+	 * Shows cleared cells
+	 * Shows COVERED cells
+	*/
+	public String displayPlayableBoard() {
+		StringBuilder bld = new StringBuilder();
+		for(int y=0;y<rows;y++) {
+			for(int x=0;x<cols;x++) {
+				int pos = y * rows + x;
+				if(board[pos].indexOf("C")==-1) {
+					if(board[pos].length()==0) {
+						bld.append(" ");
+					} else {
+						bld.append(board[pos]);
+					}
+				} else {
+					if(board[pos].indexOf("Q")!=-1) {
+						bld.append("Q");
+					}else {
+						if(board[pos].indexOf("F")!=-1) {
+							bld.append("F");
+						} else {
+							bld.append("C");	
+						}
+					}
+				}
+				if(x+1<cols)
+					bld.append(",");
+			}
+			bld.append("\n");
+		}
+		return bld.toString();
+	}
+	
+	/**
+	 * Main method to test the logic, not used in the SpringBoot/API implementation
+	 * @param args
+	 */
 	public static void main(String args[]) {
 		Calendar c = Calendar.getInstance();
 		c.set(Calendar.HOUR_OF_DAY,12);
@@ -284,16 +395,29 @@ public class Game {
 		String board[] ={"C","C","C","C","C","C2","C2","C1","C","C","CM","CM","C1","C","C","CM","C3","C1","C","C","C1","C1","C","C","C"}; 
 		Game custom = new Game(5,5,3,"martin","sdsds1sd",board,0l,c.getTimeInMillis(),true);
 		try {
+			System.out.println(custom.displayPlayableBoard());
+			
 			custom.clear(0, 0);
 			System.out.println("elapsed:" + custom.getElapsedTime());
 			System.out.println(custom.displayBoard());
+			System.out.println("-----");
+			System.out.println(custom.displayPlayableBoard());
+			
+			
 			custom.putFlag(0, 2);
 			System.out.println(custom.displayBoard());
+			System.out.println("-----");
+			System.out.println(custom.displayPlayableBoard());
 			custom.putQuestion(1, 2);
 			System.out.println(custom.displayBoard());
+			System.out.println("----");
+			System.out.println(custom.displayPlayableBoard());
 			custom.putFlag(0, 3);
 			System.out.println(custom.displayBoard());
+			System.out.println("----");
+			System.out.println(custom.displayPlayableBoard());
 			custom.clear(0, 4);
+			System.out.println(custom.displayPlayableBoard());
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
 			System.out.println(custom.displayBoard());
