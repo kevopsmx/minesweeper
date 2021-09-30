@@ -3,6 +3,8 @@ package com.deviget.minesweeper.model;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
+
+import javax.persistence.Entity;
 import javax.persistence.Id;
 
 import lombok.Getter;
@@ -13,6 +15,7 @@ import lombok.Setter;
  * @author Martín Cobián
  *
  */
+@Entity
 public class Game {
 	
 	@Getter
