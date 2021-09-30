@@ -30,6 +30,9 @@ public class Game {
 	@Setter
 	private String user;
 
+	@Getter
+	private Boolean playable;
+
 	private String board[];
 
 	//CONSTANTS representing the values in the cells
@@ -119,6 +122,71 @@ public class Game {
 			}
 		}
 	}
+
+	private Game(int cols, int rows, int mines, String user,String id, String [] board,Boolean playable){
+		this.cols = cols;
+		this.rows = rows;
+		this.mines = mines;
+		this.id = id;
+		this.board = board;
+		this.playable = playable;
+	}
+
+	public void clear(int x, int y) throws Exception{
+		if(x >= 0 && x < cols && y >= 0 && y < rows && playable) {
+			int pos = y*rows + x;
+			if(board[pos].indexOf(COVER)!=-1 && board[pos].indexOf(FLAG) ==-1 && board[pos].indexOf(QUESTION)==-1) {
+				//clear this one
+				board[pos] = board[pos].replace(""+COVER, "");
+				//if it is a MINE, the game finishes
+				if(board[pos].indexOf(MINE)!=-1) {
+					playable = false;
+					throw new Exception("lost");
+				}else {
+					//Check if the user has won
+					if(checkForWin()) {
+						playable = false;
+						throw new Exception ("you won!");
+					}
+					
+					//clear adjacents, if the cell is empty after clearing
+					if(board[pos].length()==0) {
+						//upper row
+						//x-1,y-1
+						clear(x-1,y-1);
+						//x,y-1
+						clear(x,y-1);
+						//x+1,y-1
+						clear(x+1,y-1);
+						
+						//same row
+						//x-1,y
+						clear(x-1,y);
+						//x+1, y
+						clear(x + 1,y);
+						
+						//next row
+						//x-1,y+1
+						clear(x-1,y+1);
+						//x,y+1
+						clear(x,y+1);
+						//x+1,y+1
+						clear(x+1,y+1);
+					}
+				}
+			}
+		}
+	}
+
+	public boolean checkForWin() {
+		//check for wins
+		int covered = 0;
+		for(int i=0;i<board.length;i++) {
+			if(board[i].indexOf("C")!=-1) 
+				covered++;
+		}
+		return covered==mines;
+	}
 	
 	/**
 	 * Generate the random alphanumeric gameID
@@ -156,7 +224,17 @@ public class Game {
 	}
 
 	public static void main(String args[]) {
-		Game game = new Game(5,5,3,"martin");
-		System.out.println(game.displayBoard());
+		String board[] ={"C","C","C","C","C","C2","C2","C1","C","C","CM","CM","C1","C","C","CM","C3","C1","C","C","C1","C1","C","C","C"}; 
+		Game custom = new Game(5,5,3,"martin","sdsds1sd",board,true);
+		try {
+			custom.clear(0, 0);
+			System.out.println(custom.displayBoard());
+			custom.clear(1, 0);
+			System.out.println(custom.displayBoard());
+			custom.clear(0, 4);
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			System.out.println(custom.displayBoard());
+		}
 	}
 }
