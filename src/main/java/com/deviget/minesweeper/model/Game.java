@@ -45,6 +45,7 @@ public class Game {
 	private Boolean playable;
 
 	//the game board, in an unidimensional array, representing the multidimensional cells in "x"
+	@Getter
 	private String board[];
 	
 	private Long lastMoveTime;
